@@ -1,1 +1,2 @@
-# birthday_wishes_drchrono
+# Birthday Wishes
+A mini project for my application to drchrono
