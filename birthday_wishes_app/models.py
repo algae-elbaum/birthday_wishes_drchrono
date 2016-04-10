@@ -1,26 +1,29 @@
 from __future__ import unicode_literals
 
-import requests
+import requests, datetime, pytz
 from django.db import models
 from django.contrib.auth.models import User
-from globs import max_msg_len
+from globs import max_msg_len, client_id, client_secret
 
 
 # A user of this app. Doctors are bijected with Users in django's auth system
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    access_token = models.CharField(max_length=1)
-    refresh_token = models.CharField(max_length=1)
-    expires_timestamp = models.DateTimeField()
+    access_token = models.CharField(max_length=30, default='')
+    refresh_token = models.CharField(max_length=30, default='')
+    expires_timestamp = models.DateTimeField(default=datetime.datetime.now(pytz.utc))
 
     def __str__(self):
         return self.user.username  
     
-    def check_for_new_patients():
+    def get_complete_patient_list(self):
+        if self.expires_timestamp < datetime.datetime.now(pytz.utc):
+            self.refresh_authentication()
         # I'll trust the list of patients from the API not to have repeats
-        headers = {'Authorization': self.access_token}
+        headers={'Authorization': 'Bearer %s' % self.access_token}
         patients = []
         patients_url = 'https://drchrono.com/api/patients'
+        #TODO figure out what's wrong with permissions here
         while patients_url:
             data = requests.get(patients_url, headers=headers).json()
             patients.extend(data['results'])
@@ -28,6 +31,22 @@ class Doctor(models.Model):
         #TODO Check against repeats/updates to patient data. Then add the
         # patients to this doctors set of patients
         print patients
+
+    def refresh_authentication(self):
+        response = requests.post('https://drchrono.com/o/token/', data={
+                                 'refresh_token': self.refresh_token,
+                                 'grant_type': 'refresh_token',
+                                 'client_id': client_id,
+                                 'client_secret': client_secret,
+                                })
+        response.raise_for_status()
+        data = response.json()
+
+        self.access_token = data['access_token']
+        self.refresh_token = data['refresh_token']
+        self.expires_timestamp = datetime.datetime.now(pytz.utc) \
+                                    + datetime.timedelta(seconds=data['expires_in'])  
+        doctor.save()
 
 
 # Represents a single patient
