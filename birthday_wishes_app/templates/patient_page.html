@@ -1,6 +1,6 @@
 <a href=/logout/>logout: {{ request.user.username }}</a>
 <br><br>
-{% if patient.email %}
+{% if not patient.email %}
     <p>Warning: no email exists for this patient</p>
 {% endif %}
 
