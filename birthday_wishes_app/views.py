@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from urllib import urlencode
 import requests, datetime, pytz
-from globs import redirect_uri, client_id, client_secret, scopes
+from globs import redirect_uri, client_id, client_secret
 from models import Patient, Doctor
 from forms import UserForm
 
@@ -12,7 +12,7 @@ from forms import UserForm
 def home(request):
     # Check if we have drchrono authorization for the user
     doctor = request.user.doctor
-    if doctor.access_token == '': 
+    if not doctor.access_token: 
         # Check if the user denied permissions in authorization
         if 'error' in request.GET:
             return redirect('permissions_error')
@@ -39,7 +39,7 @@ def home(request):
      
     # Now user is logged in and has granted authorization
     # Get list of all the user's patients and send out the response 
-    patient_list = doctor.get_patient_list()
+    patient_list = doctor.get_local_patient_list()
     context = {'patient_list': patient_list}
     return render(request, 'birthday_wishes.html', context)
 
@@ -50,15 +50,22 @@ def patient_page(request, uid):
     if request.method == 'POST':
         activated = request.POST.get('checkbox', False)
         msg = request.POST['msg']
-        doctor.patient_set.filter(uid=uid).update(msg_active = activated, birthday_msg = msg)
-        if activated:
-            #TODO schedule message delivery
-            pass
+        subj = request.POST['subj']
+        doctor.patient_set.filter(uid=uid).update(msg_active = activated, message = msg, subject = subj)
         return redirect(home)
     # Otherwise send the user to the form
     else:
-        patient = doctor.patient_set.filter(uid=uid).first()
+        patient = doctor.patient_set.get(uid=uid)
         return render(request, 'patient_page.html', {'patient': patient})
+
+@login_required
+def refresh_patients(request):
+    # If by some hackery the user is logged in but still got to this page 
+    # without authenticating:
+    if not request.user.doctor.access_token:
+        redirect('home')
+    request.user.doctor.update_patient_list()
+    return redirect('home')
 
 def register(request):
     # If there's a user logged in, require them to log out
@@ -98,6 +105,7 @@ def manual_logout(request):
 @login_required
 def authorize(request):
     #TODO get scopes right
+    scopes = 'patients' 
     params = {'redirect_uri': redirect_uri,
               'response_type': 'code',
               'client_id': client_id} 

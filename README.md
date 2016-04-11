@@ -6,7 +6,14 @@ automatic birthday messages for their patients
 
 Currently being hosted (intermittently) on [gaster.caltech.edu](http://gaster.caltech.edu)
 
-In case it matters to someone reading this, the music server that I put on 
-my resume has been changed to be hosted on gaster.caltech.edu:8000/muse_server 
-as apache is sad about sharing a port with django, and explicit ports seem to be 
-disallowed in the redirect uri for drchrono authentication
+Dependencies:
+django
+pytz
+requests
+sqlite
+schedule
+
+To start the dev server:
+`python manage.py runserver`
+To start the mail sending service:
+`python manage.py message_processor`

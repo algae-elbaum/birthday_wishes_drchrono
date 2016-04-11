@@ -1,0 +1,7 @@
+Make logging out also log out with drchrono
+Format scopes correctly
+Automatically log on after registration
+UI UI UI UI UI
+Make messages get sent to patients at reasonable times of day for the patients
+Test out the message sending service
+Enforce max_size for subjects and messages

@@ -1,3 +1,9 @@
+<a href=/logout/>logout: {{ request.user.username }}</a>
+<br><br>
+{% if patient.email %}
+    <p>Warning: no email exists for this patient</p>
+{% endif %}
+
 <form id="form" method="post" action="/patient/{{ patient.uid }}">
     {% csrf_token %}
     <label>
@@ -6,8 +12,12 @@
         {{ patient.name }} ({{ patient.birthday }}):
     </label>
     <br><br>
-    <label> Birthday message:<br>
-        <textarea id="msg" type="text" name="msg">{{ patient.birthday_msg }}</textarea>
+    <label> Subject:
+        <input id="subj" type="text" name="subj" value="{{ patient.subject }}">
+    </label>
+    <br>
+    <label> Birthday message:
+        <textarea id="msg" type="text" name="msg">{{ patient.message }}</textarea>
     </label>
     <input type="submit" value="Save" />
 </form>

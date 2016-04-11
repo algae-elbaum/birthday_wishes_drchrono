@@ -1,8 +1,13 @@
 <html>
 <head>
 </head>
-
 <body>
+<a href=/logout/>logout: {{ request.user.username }}</a>
+<br><br>
+<form action="/refresh_patients/">
+    <input type="submit" value="Refresh patients list">
+</form>
+
 {% if patient_list %}
     <ul style="list-style-type:none">
     {% for p in patient_list %}
