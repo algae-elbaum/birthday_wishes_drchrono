@@ -55,9 +55,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Start on the hour
+        time.sleep(60 * (60 - datetime.datetime.now().minute))
         schedule.every().hour.do(send_messages)
         schedule.every().day.do(reauthenticate)
-        time.sleep(60 * (60 - datetime.datetime.now().minutes))
         while True:
             schedule.run_pending()
             time.sleep(60) 
