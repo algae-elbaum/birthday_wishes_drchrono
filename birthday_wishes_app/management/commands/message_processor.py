@@ -54,7 +54,7 @@ class Command(BaseCommand):
                 minutes_to_sleep = 90 - datetime.datetime.now().minute
             # Add one to make sure we always pass the half hour mark (else could
             # accidentally repeat sending a message)
-            sleep(60 * (minutes_to_sleep + 1))
+            time.sleep(60 * (minutes_to_sleep + 1))
 
             send_messages()
             

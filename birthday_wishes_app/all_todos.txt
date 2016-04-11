@@ -1,5 +1,4 @@
 UI UI UI UI UI
-Test out the message sending service
 Figure out why accounts are automatically logged out after being redirected to drchrono's auth page
 Figure out why accounts are not logged out the very first time logout is called on them
 

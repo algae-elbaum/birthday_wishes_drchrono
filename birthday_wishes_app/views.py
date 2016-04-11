@@ -11,6 +11,8 @@ from forms import UserForm
 
 @login_required
 def home(request):
+    if not hasattr(request.user, 'doctor'):
+        return redirect('logout')
     # If they've never authorized us to look at their drchrono account
     if not request.user.doctor.access_token: 
         return redirect('authorize')
@@ -56,7 +58,10 @@ def refresh_patients(request):
         return redirect('home')
   
 def logout(request):
-    username = request.user.doctor.username
+    if hasattr(request.user, 'doctor'):
+        username = request.user.doctor.username
+    else:
+        username = None
     django_logout(request)
     return render(request, 'logout.html', {'username':username})
 
