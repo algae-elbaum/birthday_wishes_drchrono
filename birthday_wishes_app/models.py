@@ -19,19 +19,34 @@ class Doctor(models.Model):
     def get_complete_patient_list(self):
         if self.expires_timestamp < datetime.datetime.now(pytz.utc):
             self.refresh_authentication()
-        # I'll trust the list of patients from the API not to have repeats
         headers={'Authorization': 'Bearer %s' % self.access_token}
         patients = []
         patients_url = 'https://drchrono.com/api/patients'
-        #TODO figure out what's wrong with permissions here
         while patients_url:
             data = requests.get(patients_url, headers=headers).json()
             patients.extend(data['results'])
             patients_url = data['next'] # A JSON null on the last page
-        #TODO Check against repeats/updates to patient data. Then add the
-        # patients to this doctors set of patients
-        print patients
+        #TODO Do this asynchronously 
+        for p in patients:
+            # If the patient doesn't already exist, add it
+            if not self.patient_set.filter(uid = p['id']):
+                names = [p['first_name'], p['middle_name'], p['last_name']]
+                name = ' '.join(filter(None, names))
+                birthday = p['date_of_birth']
+                if birthday:
+                    self.patient_set.create(name=name,
+                                            doctor = self,
+                                            uid = p['id'],
+                                            birthday = birthday)
+            else:
+                self.update_patient(p)
+        return self.patient_set.all()
 
+    def update_patient(self, patient):
+        # TODO If any of the fields in patient don't match the ones we have stored,
+        # replace the field with the newer value
+        pass
+    
     def refresh_authentication(self):
         response = requests.post('https://drchrono.com/o/token/', data={
                                  'refresh_token': self.refresh_token,
@@ -62,11 +77,10 @@ class Patient(models.Model):
     # allow some leeway
     name = models.CharField(max_length = 256, default='')
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, default=None)
-    # ssn acts as a uid
-    ssn = models.IntegerField(default=-1)
+    uid = models.IntegerField(default=-1)
     birthday = models.DateField()
     birthday_msg = models.CharField(max_length = max_msg_len, default='')
-    msg_active = models.BooleanField()
+    msg_active = models.BooleanField(default=False)
    
     def __str__(self): 
         return self.name

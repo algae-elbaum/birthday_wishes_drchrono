@@ -38,7 +38,7 @@ def home(request):
             doctor.save()
      
     # Now user is logged in and has granted authorization
-    # Get list of all Patients and send out the response 
+    # Get list of all the user's patients and send out the response 
     patient_list = doctor.get_complete_patient_list()
     context = {'patient_list': patient_list}
     return render(request, 'birthday_wishes.html', context)
@@ -47,7 +47,7 @@ def home(request):
 def register(request):
     # If there's a user logged in, require them to log out
     if request.user.is_authenticated():
-        return redirect(request, 'manual_logout')
+        return redirect('manual_logout')
     # If it's post, the user has sent us their info and we need to try to set them up
     if request.method == 'POST':
         success = False
@@ -81,10 +81,10 @@ def manual_logout(request):
 
 @login_required
 def authorize(request):
+    #TODO get scopes right
     params = {'redirect_uri': redirect_uri,
               'response_type': 'code',
-              'client_id': client_id,
-              'scope': scopes} 
+              'client_id': client_id} 
     return redirect('https://drchrono.com/o/authorize/?' + urlencode(params)) 
 
 def permissions_error(request):
