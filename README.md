@@ -16,4 +16,4 @@ schedule
 To start the dev server:
 `python manage.py runserver`
 To start the mail sending service:
-`python manage.py periodic_jobs
+`python manage.py periodic_jobs`
