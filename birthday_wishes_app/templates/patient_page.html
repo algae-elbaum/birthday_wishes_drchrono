@@ -1,4 +1,5 @@
-<a href=/logout/>logout: {{ request.user.username }}</a>
+<a href=/logout/>logout: {{ request.user.username }}</a><br>
+<a href=/>home</a>
 <br><br>
 {% if not patient.email %}
     <p>Warning: no email exists for this patient</p>
@@ -12,13 +13,19 @@
         {{ patient.name }} ({{ patient.birthday }}):
     </label>
     <br><br>
-    <label> Subject:
-        <input id="subj" type="text" name="subj" value="{{ patient.subject }}">
+    Select an hour for the message to be sent (UTC):
+    <input type="number" name="time" value={{ patient.message_time }} min="0" max="23">
+    <br>
+    The message will be sent at the half hour mark of the given hour if the checkbox above is checked
+    <br><br>
+    <label> Subject (max length {{ subj_max }} chars):<br>
+        <input id="subj" type="text" name="subj" maxlength="100" value="{{ patient.subject }}">
     </label>
     <br>
-    <label> Birthday message:
-        <textarea id="msg" type="text" name="msg">{{ patient.message }}</textarea>
+    <label> Birthday message (max length {{ msg_max }} chars):<br>
+        <textarea id="msg" type="text" name="msg" maxlength="1000">{{ patient.message }}</textarea>
     </label>
+    <br><br>
     <input type="submit" value="Save" />
 </form>
 

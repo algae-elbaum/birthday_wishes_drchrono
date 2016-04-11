@@ -9,6 +9,7 @@
 </form>
 
 {% if patient_list %}
+    <p>Only displaying patients with available birthdays and emails</p>
     <ul style="list-style-type:none">
     {% for p in patient_list %}
         <li>
@@ -24,3 +25,4 @@
 {% endif %}
 
 </body>
+</html>

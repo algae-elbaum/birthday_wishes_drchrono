@@ -1,7 +1,8 @@
 
 {% if success %}
-    <p> Successfully registered! <a href=/>Click here</a> to be taken back to the home page </p>
+    <p> Successfully registered! <a href=/login/>Click here</a> to login </p>
 {% else %}
-    <p> Registration failed :( <a href=/register/>Click here</a> to try again</p>
-    <p> Or <a href=/>click here</a> to be taken back to the home page </p>
+    <p>{{ user_form.errors }}</p>
+    <p>Registration failed :( <a href=/register/>Click here</a> to try again</p>
+    <p>Or <a href=/>click here</a> to be taken back to the home page</p>
 {% endif %}

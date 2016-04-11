@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from django.contrib.auth.views import login, logout_then_login
+from django.contrib.auth.views import login
 from django.views.generic import RedirectView
 
 from . import views
@@ -7,7 +7,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^login/', login, {'template_name': 'login.html'}),
-    url(r'^logout/', logout_then_login),
+    url(r'^logout/', views.logout, name='logout'),
     url(r'^manual_logout/', views.manual_logout, name='manual_logout'),
     url(r'^register/', views.register, name='register'),
     url(r'^authorize/', views.authorize, name='authorize'),

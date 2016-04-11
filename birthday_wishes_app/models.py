@@ -3,12 +3,13 @@ from __future__ import unicode_literals
 import requests, datetime, pytz
 from django.db import models
 from django.contrib.auth.models import User
-from globs import client_id, client_secret
+from globs import client_id, client_secret, msg_max, subj_max
 
 
 # A user of this app. Doctors are bijected with Users in django's auth system
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=50, default='')
     access_token = models.CharField(max_length=30, default='')
     refresh_token = models.CharField(max_length=30, default='')
     expires_timestamp = models.DateTimeField(default=datetime.datetime.now(pytz.utc))
@@ -27,14 +28,15 @@ class Doctor(models.Model):
         patients = []
         patients_url = 'https://drchrono.com/api/patients'
         while patients_url:
-            data = requests.get(patients_url, headers=headers).json()
+            response = requests.get(patients_url, headers=headers)
+            response.raise_for_status()
+            data = response.json()
             patients.extend(data['results'])
             patients_url = data['next'] # A JSON null on the last page
         for p in patients:
             # If the patient doesn't already exist, add it
-            birthday = p['date_of_birth']
-            # We only care about the patients drchrono gives us with birthdays
-            if birthday:
+            # But only if they have a birthday and email
+            if p['date_of_birth'] and p['email']:
                 names = [p['first_name'], p['middle_name'], p['last_name']]
                 name = ' '.join(filter(None, names))
                 if not self.patient_set.filter(uid = p['id']):
@@ -47,7 +49,7 @@ class Doctor(models.Model):
                                       email=p['email'],
                                       doctor = self,
                                       uid = p['id'],
-                                      birthday = birthday)
+                                      birthday = p['date_of_birth'])
 
 
     # If the access token is expired, this refreshes authentication
@@ -87,8 +89,9 @@ class Patient(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, default=None)
     uid = models.IntegerField(default=-1)
     birthday = models.DateField()
-    subject = models.CharField(max_length = 100, default='')
-    message = models.TextField(max_length = 1000, default='')
+    subject = models.CharField(max_length = subj_max, default='')
+    message = models.TextField(max_length = msg_max, default='')
+    message_time = models.IntegerField(default=12)
     msg_active = models.BooleanField(default=False)
    
     def __str__(self): 
