@@ -34,7 +34,8 @@ class Doctor(models.Model):
             patients.extend(data['results'])
             patients_url = data['next'] # A JSON null on the last page
         for p in patients:
-            # If the patient doesn't already exist, add it
+            # If the patient doesn't already exist, add it. If it does exist
+            # make sure the patient info is up to date
             # But only if they have a birthday and email
             if p['date_of_birth'] and p['email']:
                 names = [p['first_name'], p['middle_name'], p['last_name']]

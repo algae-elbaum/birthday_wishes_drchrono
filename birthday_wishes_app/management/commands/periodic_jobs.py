@@ -1,12 +1,17 @@
 from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
-from birthday_wishes_app.models import Patient
-import time, datetime
+from birthday_wishes_app.models import Patient, Doctor
+import time, datetime, schedule
 
 # If there were even a little bit more scheduling that needed to be done in this app,
 # or any dreams of extensibility, I would switch to something like celery/redis to
 # do the scheduled and asynchronous jobs. However, since those conditions aren't
 # satisfied, this is a really simple way of getting the messages sent.
+
+# Now that two jobs are happening here, I feel a little uncomfortable keeping the
+# scheduling like this rather than using celery. However, this is still fairly
+# clean and I don't yet feel like it's even worth it to add all the extra weight 
+# of celery and redis to something as small as this
 
 def send_messages():
     print 'Sending messages'
@@ -40,23 +45,21 @@ def send_messages():
         except:
             print 'Failed to send message to', m.name 
 
+def reauthenticate():
+    for d in Doctor.objects.all():
+        d.refresh_authentication()
+
 
 class Command(BaseCommand):
     help = "Daily sends all active birthday messages for the day"
 
     def handle(self, *args, **options):
-        while 1:
-            # Sleep until the next 31 minute mark. This will not be very accurate,
-            # however it will never drift significantly from sending at the 31
-            # minute mark of every hour
-            minutes_to_sleep = 30 - datetime.datetime.now().minute
-            if minutes_to_sleep < 0:
-                minutes_to_sleep = 90 - datetime.datetime.now().minute
-            # Add one to make sure we always pass the half hour mark (else could
-            # accidentally repeat sending a message)
-            time.sleep(60 * (minutes_to_sleep + 1))
-
-            send_messages()
-            
+        # Start on the hour
+        schedule.every().hour.do(send_messages)
+        schedule.every().day.do(reauthenticate)
+        time.sleep(60 * (60 - datetime.datetime.now().minutes))
+        while True:
+            schedule.run_pending()
+            time.sleep(60) 
 
 

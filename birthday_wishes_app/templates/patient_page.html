@@ -16,7 +16,7 @@
     Select an hour for the message to be sent (UTC):
     <input type="number" name="time" value={{ patient.message_time }} min="0" max="23">
     <br>
-    The message will be sent at the half hour mark of the given hour if the checkbox above is checked
+    The message will be sent at the start of the given hour if the checkbox above is checked
     <br><br>
     <label> Subject (max length {{ subj_max }} chars):<br>
         <input id="subj" type="text" name="subj" maxlength="100" value="{{ patient.subject }}">
