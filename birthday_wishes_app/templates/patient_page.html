@@ -1,0 +1,14 @@
+<form id="form" method="post" action="/patient/{{ patient.uid }}">
+    {% csrf_token %}
+    <label>
+        <input type="checkbox" value="true" name="checkbox" data-toggle="checkbox"
+         {% if patient.msg_active %} checked {% endif %} >
+        {{ patient.name }} ({{ patient.birthday }}):
+    </label>
+    <br><br>
+    <label> Birthday message:<br>
+        <textarea id="msg" type="text" name="msg">{{ patient.birthday_msg }}</textarea>
+    </label>
+    <input type="submit" value="Save" />
+</form>
+

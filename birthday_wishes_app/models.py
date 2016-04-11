@@ -15,8 +15,10 @@ class Doctor(models.Model):
 
     def __str__(self):
         return self.user.username  
-    
-    def get_complete_patient_list(self):
+   
+    # Update the set of patients associated with this doctor, and then
+    # return the updated list 
+    def get_patient_list(self):
         if self.expires_timestamp < datetime.datetime.now(pytz.utc):
             self.refresh_authentication()
         headers={'Authorization': 'Bearer %s' % self.access_token}

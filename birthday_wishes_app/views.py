@@ -39,10 +39,26 @@ def home(request):
      
     # Now user is logged in and has granted authorization
     # Get list of all the user's patients and send out the response 
-    patient_list = doctor.get_complete_patient_list()
+    patient_list = doctor.get_patient_list()
     context = {'patient_list': patient_list}
     return render(request, 'birthday_wishes.html', context)
 
+@login_required
+def patient_page(request, uid):
+    doctor = request.user.doctor
+    # If it's a POST, set the patient's fields according to the form
+    if request.method == 'POST':
+        activated = request.POST.get('checkbox', False)
+        msg = request.POST['msg']
+        doctor.patient_set.filter(uid=uid).update(msg_active = activated, birthday_msg = msg)
+        if activated:
+            #TODO schedule message delivery
+            pass
+        return redirect(home)
+    # Otherwise send the user to the form
+    else:
+        patient = doctor.patient_set.filter(uid=uid).first()
+        return render(request, 'patient_page.html', {'patient': patient})
 
 def register(request):
     # If there's a user logged in, require them to log out
@@ -89,4 +105,3 @@ def authorize(request):
 
 def permissions_error(request):
     return render(request, 'permissions_error.html')
-

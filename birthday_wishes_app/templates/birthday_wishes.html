@@ -1,9 +1,21 @@
+<html>
+<head>
+</head>
+
+<body>
 {% if patient_list %}
-    <ul>
-    {% for patient in patient_list %}
-        <li>({{ patient.birthday }}) {{ patient.name }}: {{ patient.message }}</li>
+    <ul style="list-style-type:none">
+    {% for p in patient_list %}
+        <li>
+            <input type="checkbox" value="true" name="checkbox" data-toggle="checkbox"
+            {% if p.msg_active %} checked {% endif %} disabled>
+
+            <a href=/patient/{{ p.uid }}>{{ p.name }} ({{ p.birthday }})</a> 
+        </li>
     {% endfor %}
     </ul>
 {% else %}
     <p>No patients are available.</p>
 {% endif %}
+
+</body>

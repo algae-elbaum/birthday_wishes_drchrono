@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^manual_logout/', views.manual_logout, name='manual_logout'),
     url(r'^register/', views.register, name='register'),
     url(r'^authorize/', views.authorize, name='authorize'),
-    url(r'^permissions_error/', views.permissions_error, name='permissions_error')
+    url(r'^permissions_error/', views.permissions_error, name='permissions_error'),
+    url(r'^patient/([0-9]+)', views.patient_page, name='patient_page')
 ]
