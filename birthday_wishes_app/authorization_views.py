@@ -24,7 +24,9 @@ def authorization_redirect(request):
     # Check if the user denied permissions in authorization
     if 'error' in request.GET:
         return redirect('permissions_error')
-    elif 'code' in request.GET:
+    # This will raise an error on either the code key not existing or the 
+    # code being invalid
+    try:    
         # We have a valid code, use it to get our access token, refresh token
         # and authentication timeout
         response = requests.post('https://drchrono.com/o/token/', data={
@@ -50,7 +52,7 @@ def authorization_redirect(request):
         doctor.username = username
         doctor.save()
         return redirect('home')
-    else:
+    except:
         return render(request, 'bad_authorization.html')
 
 
