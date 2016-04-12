@@ -54,14 +54,21 @@ def refresh_patients(request):
         return redirect ('authorize')
         request.user.doctor.update_patient_list()
         return redirect('home')
-  
+
+def about(request):
+    return render(request, 'about.html')
+
 def logout(request):
-    if hasattr(request.user, 'doctor'):
+    # If the user was a properly logged in user with a username, remind them
+    # to also log out with drchrono
+    if hasattr(request.user, 'doctor') and request.user.doctor.username:
         username = request.user.doctor.username
+        django_logout(request)
+        return render(request, 'logout.html', {'username':username})
+    # Otherwise just bring them home
     else:
-        username = None
-    django_logout(request)
-    return render(request, 'logout.html', {'username':username})
+        django_logout(request)
+        return redirect('home')
 
 def register(request):
     # If there's a user logged in, require them to log out

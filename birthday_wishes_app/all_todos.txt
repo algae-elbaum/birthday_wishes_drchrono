@@ -1,4 +1,5 @@
-UI UI UI UI UI
+Make messages send at UTC not PST
+Organize code better
 
 May not address:
 Format scopes correctly

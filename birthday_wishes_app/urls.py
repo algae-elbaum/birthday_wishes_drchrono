@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^permissions_error/', views.permissions_error, name='permissions_error'),
     url(r'^patient/([0-9]+)', views.patient_page, name='patient_page'),
     url(r'^refresh_patients/', views.refresh_patients, name='refresh_patients'),
+    url(r'^about/', views.about, name='about'),
     
     # Not part of the project. I just want this url to still work while django is hogging port 80 
     url(r'^muse_server/$', RedirectView.as_view(url='http://gaster.caltech.edu:8000/muse_server/'))

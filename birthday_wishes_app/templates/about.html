@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>Welcome to Birthday Wishes, satisfying your need to automatically wish your patients
+happy birthday since 2016!</p>
+<p>After registering and linking your Birthday Wishes account with your drchrono account 
+(how to do so should become clear when you start the registration process if you haven't
+already), you will see a mostly empty page with a "refresh patients list" button. Clicking this
+button will retrieve a list of your patients from drchrono and list them out on that
+page. If you already have a list of patients, the button will retrieve any new patients
+and update the data of patients that have already been retrieved as needed.</p>
+<p>Next to each patient's name will be a checkbox indicating whether or not that patient
+is set to recieve a message on their birthday. To update the status of that checkbox, as 
+well as update or set any of the properties of the message to be sent, click the patient's 
+name. After making your changes, you will need to press the save button for them to take
+effect. Navigating away from the page without saving will cause your changes to be lost
+to the depths of history</p>
+{% endblock %}

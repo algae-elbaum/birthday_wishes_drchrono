@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 
 {# This template largely ripped from the django docs on how to use their login view #}
 {% block content %}
@@ -33,7 +34,7 @@
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
 {% else %}
-    <a href=/logout/>logout: {{ request.user.username }}</a>
+    <a href=/logout/>Logout</a>
     <br><br>
     <p>You're already logged in!</p>
 {% endif %}

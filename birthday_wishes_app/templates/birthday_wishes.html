@@ -1,10 +1,14 @@
-<html>
-<head>
-</head>
-<body>
-{% if logged_in %}
-    <a href=/logout/>logout: {{ request.user.username }}</a>
-    <br><br>
+{% extends "base.html" %}
+
+{% block content %}
+{% if not logged_in %}
+     <p>Please <a href="/register">register</a> or <a href="/login/">login</a><p>
+     <p>If you have registered but not linked with drchrono, you must
+     <a href="/authorize/">login with drchrono</a> before logging in to Birthday Wishes</p>
+{% elif not request.user.doctor.access_token %}
+     <p><a href="/logout/">logout</a> and login with drchrono <strong>before</strong> signing
+     in to Birthday Wishes</p>
+{% else %}
     <form action="/refresh_patients/">
         <input type="submit" value="Refresh patients list">
     </form>
@@ -24,9 +28,5 @@
         <p>No patients are available.</p>
     {% endif %}
 
-{% else %}
-     <p><a href="/register">Register</a></p>
-     <p><a href="/login/">Login</a><p>
 {% endif %}
-</body>
-</html>
+{% endblock %}

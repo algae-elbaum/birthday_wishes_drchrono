@@ -1,10 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
 {% if username %}
-    <p>Please also logout from drchrono. Otherwise if someone else uses this computer<br>
-    to login to this site, drchrono will use the currently logged in drchono user for<br>
-    the list of patients gotten by pressing the refresh patients button. To avoid sharing<br>
-    your patients, log out from drchrono by pressing this link:</p
+    <p><strong>Please also log out from drchrono.</strong> Otherwise if someone else uses this computer
+    to login to this site, drchrono will use the currently logged in drchono user for the list of patients. 
+    To avoid sharing your patients, log out from drchrono by pressing this link:</p>
     <p><a href=https://{{ username }}.drchrono.com/accounts/logout/>logout drchrono</a></p>
 {% else %}
-    <p>If you got here by only clicking links on the site, that shouldn't have happened.<br>
-       If you want to help out, please email lorem@ipsum.com detailing how you get here</p>
+    <p>You've already logged out. Don't forget to also log out of drchrono if other doctors
+       are going to use this site on this computer.</p>
 {% endif %}
+{% endblock %}
