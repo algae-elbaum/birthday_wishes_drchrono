@@ -9,17 +9,15 @@ from globs import redirect_uri, client_id, client_secret, msg_max, subj_max
 from models import Patient, Doctor
 from forms import UserForm
 
-@login_required
 def home(request):
-    if not hasattr(request.user, 'doctor'):
+    context = {'logged_in': request.user.is_authenticated()}
+    # Must be a doctor to be here (admins need to pretend to be doctors)
+    if context['logged_in'] and not hasattr(request.user, 'doctor'):
         return redirect('logout')
-    # If they've never authorized us to look at their drchrono account
-    if not request.user.doctor.access_token: 
-        return redirect('authorize')
-    # Now user is logged in and has granted authorization
-    # Get list of all the user's patients and send out the response 
-    patient_list = request.user.doctor.get_local_patient_list()
-    context = {'patient_list': patient_list}
+    if context['logged_in']:
+        # Get list of all the user's patients to send out in the response 
+        patient_list = request.user.doctor.get_local_patient_list()
+        context['patient_list'] = patient_list
     return render(request, 'birthday_wishes.html', context)
 
 @login_required
@@ -53,7 +51,7 @@ def refresh_patients(request):
         return redirect('home')
     except:
         # We don't want to use it as a view, we just want its side effects
-        authorize(request)
+        return redirect ('authorize')
         request.user.doctor.update_patient_list()
         return redirect('home')
   
@@ -98,20 +96,26 @@ def register(request):
 def manual_logout(request):
     return render(request, 'manual_logout.html')    
 
-@login_required
 def authorize(request):
+    # Must not be logged in here. After authorizing, users are prompted to log
+    # in, and if a user is already logged in then there are multiple users
+    # logged in at once and that's no good
+    if request.user.is_authenticated():
+        return redirect('manual_logout')
+    
+    params = {'redirect_uri': redirect_uri,
+              'response_type': 'code',
+              'client_id': client_id,}
+              # TODO isn't this how scope is supposed to work?
+              #'scope': 'patients'}
+    return redirect('https://drchrono.com/o/authorize/?' + urlencode(params))
+
+@login_required
+def authorization_redirect(request):
     # Check if the user denied permissions in authorization
     if 'error' in request.GET:
         return redirect('permissions_error')
-    # Check if we need to get an authorization code
-    if 'code' not in request.GET:
-        params = {'redirect_uri': redirect_uri,
-                  'response_type': 'code',
-                  'client_id': client_id,}
-                  # TODO isn't this how scope is supposed to work?
-                  #'scope': 'patients'}
-        return redirect('https://drchrono.com/o/authorize/?' + urlencode(params))
-    else:
+    elif 'code' in request.GET:
         # We have a valid code, use it to get our access token, refresh token
         # and authentication timeout
         response = requests.post('https://drchrono.com/o/token/', data={
@@ -135,10 +139,11 @@ def authorize(request):
         doctor.expires_timestamp = datetime.datetime.now(pytz.utc) \
                                     + datetime.timedelta(seconds=data['expires_in'])  
         doctor.username = username
-        print username
         doctor.save()
         return redirect('home')
- 
+    else:
+        return render(request, 'bad_authorization.html')
+
 
 def permissions_error(request):
     return render(request, 'permissions_error.html')

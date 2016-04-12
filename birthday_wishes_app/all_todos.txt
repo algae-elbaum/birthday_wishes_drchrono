@@ -1,11 +1,6 @@
 UI UI UI UI UI
-Figure out why accounts are automatically logged out after being redirected to drchrono's auth page
-Figure out why accounts are not logged out the very first time logout is called on them
 
 May not address:
-Automatically log on after registration
-    # Giving authentication issues for some reason
-    # For now (and maybe forever) will just redirect to login after registration
 Format scopes correctly
     # I'm pretty confused by this one. Does fetching the patients require more
       than listing patients in the scope field?

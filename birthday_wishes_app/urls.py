@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^manual_logout/', views.manual_logout, name='manual_logout'),
     url(r'^register/', views.register, name='register'),
     url(r'^authorize/', views.authorize, name='authorize'),
+    url(r'^authorization_redirect/', views.authorization_redirect, name='authorization_redirect'),
     url(r'^permissions_error/', views.permissions_error, name='permissions_error'),
     url(r'^patient/([0-9]+)', views.patient_page, name='patient_page'),
     url(r'^refresh_patients/', views.refresh_patients, name='refresh_patients'),

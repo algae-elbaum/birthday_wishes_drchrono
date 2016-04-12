@@ -16,7 +16,6 @@
 {% endif %}
 
 {% if not user.is_authenticated %}
-    <a href=/register/>register here</a>
     <form method="post" action="/login/">
         {% csrf_token %}
         <table>

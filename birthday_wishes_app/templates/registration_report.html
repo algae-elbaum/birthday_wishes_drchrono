@@ -1,6 +1,9 @@
 
 {% if success %}
-    <p> Successfully registered! <a href=/login/>Click here</a> to login </p>
+    <p>Successfully registered!</p>
+    <p>You should now <a href=/authorize/>log in with drchrono</a> and follow the prompts<br>
+    <p>At the end you will be asked to log in to the account you just made. This will link that
+    account with your drchrono account and registration will be complete</p>
 {% else %}
     <p>{{ user_form.errors }}</p>
     <p>Registration failed :( <a href=/register/>Click here</a> to try again</p>

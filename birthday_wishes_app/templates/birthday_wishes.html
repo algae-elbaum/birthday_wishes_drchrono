@@ -2,27 +2,31 @@
 <head>
 </head>
 <body>
-<a href=/logout/>logout: {{ request.user.username }}</a>
-<br><br>
-<form action="/refresh_patients/">
-    <input type="submit" value="Refresh patients list">
-</form>
+{% if logged_in %}
+    <a href=/logout/>logout: {{ request.user.username }}</a>
+    <br><br>
+    <form action="/refresh_patients/">
+        <input type="submit" value="Refresh patients list">
+    </form>
+    {% if patient_list %}
+        <p>Only displaying patients with available birthdays and emails</p>
+        <ul style="list-style-type:none">
+        {% for p in patient_list %}
+            <li>
+                <input type="checkbox" value="true" name="checkbox" data-toggle="checkbox"
+                {% if p.msg_active %} checked {% endif %} disabled>
 
-{% if patient_list %}
-    <p>Only displaying patients with available birthdays and emails</p>
-    <ul style="list-style-type:none">
-    {% for p in patient_list %}
-        <li>
-            <input type="checkbox" value="true" name="checkbox" data-toggle="checkbox"
-            {% if p.msg_active %} checked {% endif %} disabled>
+                <a href=/patient/{{ p.uid }}>{{ p.name }} ({{ p.birthday }})</a> 
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No patients are available.</p>
+    {% endif %}
 
-            <a href=/patient/{{ p.uid }}>{{ p.name }} ({{ p.birthday }})</a> 
-        </li>
-    {% endfor %}
-    </ul>
 {% else %}
-    <p>No patients are available.</p>
+     <p><a href="/register">Register</a></p>
+     <p><a href="/login/">Login</a><p>
 {% endif %}
-
 </body>
 </html>
