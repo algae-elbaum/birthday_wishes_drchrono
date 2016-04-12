@@ -88,7 +88,8 @@ class Patient(models.Model):
     birthday = models.DateField()
     subject = models.CharField(max_length = subj_max, default='')
     message = models.TextField(max_length = msg_max, default='')
-    message_time = models.IntegerField(default=12)
+    # Default time is noon UTC as the server lives in PST
+    message_time = models.IntegerField(default=12 - 7)
     msg_active = models.BooleanField(default=False)
    
     def __str__(self): 
