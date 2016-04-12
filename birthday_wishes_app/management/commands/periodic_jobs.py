@@ -24,7 +24,7 @@ def send_messages():
         # It would be really bad to require doctors to give their email
         # authentication to this site, so instead the messages will be
         # sent from the unfortunately less personal email of the server
-        # NOTE: This won't actually work until the server gets a smtp
+        # NOTE: This won't actually work until the server gets an smtp
         # server
         try:
 #               send_mail(m.subject, 

@@ -4,7 +4,7 @@ from globs import msg_max, subj_max
 
 def home(request):
     context = {'logged_in': request.user.is_authenticated()}
-    # Must be a doctor to be here (admins need to pretend to be doctors)
+    # Must be a doctor to be here (even admins need to pretend to be doctors)
     if context['logged_in'] and not hasattr(request.user, 'doctor'):
         return redirect('logout')
     if context['logged_in']:
@@ -21,7 +21,9 @@ def patient_page(request, uid):
         activated = request.POST.get('checkbox', False)
         msg = request.POST['msg']
         subj = request.POST['subj']
-        time = request.POST['time']
+        # Hard coding the difference between UTC and the server's timezone (PST)
+        # is a little unfortunate
+        time = (int(request.POST['time']) - 7) % 24
         doctor.patient_set.filter(uid=uid).update(msg_active = activated, 
                                                   message = msg[:msg_max], 
                                                   subject = subj[:subj_max],
@@ -32,7 +34,8 @@ def patient_page(request, uid):
         patient = doctor.patient_set.get(uid=uid)
         context = {'patient': patient,
                    'msg_max': msg_max,
-                   'subj_max': subj_max}
+                   'subj_max': subj_max,
+                   'UTC_time': (patient.message_time + 7) % 24}
         return render(request, 'patient_page.html', context)
 
 @login_required
