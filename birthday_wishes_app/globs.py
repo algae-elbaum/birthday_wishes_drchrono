@@ -1,9 +1,3 @@
-from requests_oauthlib import OAuth1
-
-# Vars in this file are those that possibly want to be used in multiple files.
-# In reality they will probably only be used in models.py, so they may all just
-# get transferred back there in the end.
-
 # For authenticating:
 redirect_uri = 'http://gaster.caltech.edu/authorization_redirect/'
 client_id = 'xMhsSBQKKJKU4iyc5QMh7Ivkn7kxNxAYTdRUgqtC'
