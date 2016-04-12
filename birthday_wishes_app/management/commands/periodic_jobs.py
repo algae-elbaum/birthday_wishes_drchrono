@@ -47,7 +47,12 @@ def send_messages():
 
 def reauthorize():
     for d in Doctor.objects.all():
-        d.refresh_authorization()
+        try:
+            d.refresh_authorization()
+        # Ignore errors, the user will be asked to fix it when they next refresh 
+        # their patients
+        except:
+            pass
 
 
 class Command(BaseCommand):
