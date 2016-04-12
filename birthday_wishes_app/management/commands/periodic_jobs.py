@@ -45,9 +45,9 @@ def send_messages():
         except:
             print 'Failed to send message to', m.name 
 
-def reauthenticate():
+def reauthorize():
     for d in Doctor.objects.all():
-        d.refresh_authentication()
+        d.refresh_authorization()
 
 
 class Command(BaseCommand):
@@ -57,7 +57,7 @@ class Command(BaseCommand):
         # Start on the hour
         time.sleep(60 * (60 - datetime.datetime.now().minute))
         schedule.every().hour.do(send_messages)
-        schedule.every().day.do(reauthenticate)
+        schedule.every().day.do(reauthorize)
         while True:
             schedule.run_pending()
             time.sleep(60) 

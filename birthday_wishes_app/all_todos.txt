@@ -1,7 +1,5 @@
 Make messages send at UTC not PST
 Organize code better
-Make sure the permissions error page does the right thing
-Make sure expired tokens are dealt with correctly (in case the refresh job gets messed up)
 
 May not address:
 Format scopes correctly

@@ -22,13 +22,12 @@ class Doctor(models.Model):
 
     # Update the set of patients associated with this doctor
     def update_patient_list(self):
-        if self.expires_timestamp < datetime.datetime.now(pytz.utc):
-            self.refresh_authentication()
         headers={'Authorization': 'Bearer %s' % self.access_token}
         patients = []
         patients_url = 'https://drchrono.com/api/patients'
         while patients_url:
             response = requests.get(patients_url, headers=headers)
+            # This will tell us if the user needs to give us authorization
             response.raise_for_status()
             data = response.json()
             patients.extend(data['results'])
@@ -53,11 +52,8 @@ class Doctor(models.Model):
                                       birthday = p['date_of_birth'])
 
 
-    # If the access token is expired, this refreshes authentication
-    # I'm assuming that the access token does not need to be active
-    # for this to work. If it does, I'll have to schedule a reauthentication
-    # job
-    def refresh_authentication(self):
+    # To prevent expiration and needing the user to reauthorize
+    def refresh_authorization(self):
         response = requests.post('https://drchrono.com/o/token/', data={
                                  'refresh_token': self.refresh_token,
                                  'grant_type': 'refresh_token',

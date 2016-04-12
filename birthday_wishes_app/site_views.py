@@ -43,10 +43,7 @@ def refresh_patients(request):
         request.user.doctor.update_patient_list()
         return redirect('home')
     except:
-        # We don't want to use it as a view, we just want its side effects
-        return redirect ('authorize')
-        request.user.doctor.update_patient_list()
-        return redirect('home')
+        return redirect('permissions_error')
 
 def about(request):
     return render(request, 'about.html')
