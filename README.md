@@ -11,14 +11,14 @@ To set up your own instance of this, you will need to run your own database and
 configure the app to use it. It is currently configured to use postgresql. 
 
 Additionally, you'll want to modify the settings to use your own email settings.
-In case it happens to be useful for drchrono devs reviewing this, the account 
-currently in settings.py is a real account.
+In case it happens to be useful for anyone reviewing this, the account currently
+in settings.py is a real account.
 
-(I know I've kept my dev username and password for the database and the email in
- settings.py. In practice I wouldn't put the actual dev username and password of 
- anything in a public git repo, but here the account is just a one off local 
- thing so it's not a problem to ignore it and avoid making committing changes to
- settings.py more complex.)
+(I know I've kept the dev username and password for the database and the email
+ in settings.py. In practice I of course wouldn't put the actual dev username
+ and password of anything in a public git repo, but here the accounts are just
+ one off things, so it's not a problem to ignore it and avoid making committing
+ changes to settings.py more complex.)
 
 
 To start the dev server:  
