@@ -4,20 +4,28 @@ A mini project for my application to drchrono
 Provides a UI to doctors which will allow them to set up automatic birthday 
 messages for their patients
 
-Currently being hosted (intermittently) on [gaster.caltech.edu](http://gaster.caltech.edu)
+Currently being hosted (intermittently) on [birthday-wishes.herokuapp.com/](https://birthday-wishes.herokuapp.com/)
 
-To set up, you will need to run your own database and configure the app to use
-it. It is currently configured to use sqlite
+
+To set up your own instance of this, you will need to run your own database and 
+configure the app to use it. It is currently configured to use postgresql. 
 
 Additionally, you'll want to modify the settings to use your own email settings.
-For ease of drchrono devs reviewing this, the account currently in the settings
-is a real account. In practice I certainly wouldn't put the username and password
-of the account used for dev in a public repo.
+In case it happens to be useful for drchrono devs reviewing this, the account 
+currently in settings.py is a real account.
+
+(I know I've kept my dev username and password for the database and the email in
+ settings.py. In practice I wouldn't put the actual dev username and password of 
+ anything in a public git repo, but here the account is just a one off local 
+ thing so it's not a problem to ignore it and avoid making committing changes to
+ settings.py more complex.)
+
 
 To start the dev server:  
 `python manage.py runserver`  
 To start the periodic jobs (mail sending and authorization refreshing):  
 `python manage.py periodic_jobs`
+
 
 Currently birthday texts are not supported, as I don't think that would be a good
 feature. I would be uncomfortable with my doctor sending me automated birthday
