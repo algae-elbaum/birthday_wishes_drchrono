@@ -6,6 +6,11 @@ messages for their patients
 
 Currently being hosted (intermittently) on [birthday-wishes.herokuapp.com/](https://birthday-wishes.herokuapp.com/)
 
+(Note: The Heroku app will not actually send the birthday messages. Scaling the
+ number of worker processes to be greater than 0 made Heroku ask for my credit
+ card number, which I was not willing to give for this project. A dev instance,
+ on the other hand, will send the emails)
+
 
 To set up your own instance of this, you will need to run your own database and 
 configure the app to use it. It is currently configured to use postgresql. 
@@ -20,6 +25,13 @@ in settings.py is a real account.
  one off things, so it's not a problem to ignore it and avoid making committing
  changes to settings.py more complex.)
 
+
+To run this in a local dev environment, you should add the appropriate entry to
+ALLOWED_HOSTS and set the values in birthday_wishes_app/globs.py to the values
+you want. (Currently that file holds the client secret of this app. Again, this
+would be a BAD_THING<sup>tm</sup> if this weren't a one off project, in which case
+I would be more cautious. So too for the SECRET_KEY in settings.py). You should
+set DEBUG to True if you want the css to work.
 
 To start the dev server:  
 `python manage.py runserver`  
